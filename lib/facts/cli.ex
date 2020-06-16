@@ -1,7 +1,14 @@
 defmodule Facts.CLI do
 
-  @switches [help: :boolean]
-  @aliases [h: :help]
+  @switches [
+    help: :boolean,
+    new: :string,
+    name: :string,
+  ]
+  @aliases [
+    h: :help,
+    n: :new,
+  ]
 
   def main(args) do
     args
@@ -16,16 +23,12 @@ defmodule Facts.CLI do
       aliases: @aliases
     ]
 
-    result = OptionParser.parse(args, opts)
-
-    case result do
-      {[help: true], _, _} -> :help
-      _ -> :no_such_command
-    end
+    {result, _, _} = OptionParser.parse(args, opts)
+    result
   end
 
 
-  def process(:help) do
+  def process([{:help, true}]) do
     help_text = """
     Available commands:
     --help/-h : Display help
@@ -34,7 +37,7 @@ defmodule Facts.CLI do
     help_text
   end
 
-  def process(:no_such_command) do
+  def process(_) do
     help_text = """
     No such command. Use --help/-h to display available commands.
     """
