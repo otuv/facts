@@ -11,6 +11,9 @@ defmodule CliTest do
     help = process [{:help, true}]
     assert is_bitstring help
     assert String.contains?(help, "-h")
+    assert String.contains?(help, "-n")
+    assert String.contains?(help, "new")
+    assert String.contains?(help, "--name")
     assert String.contains?(String.downcase(help), "available commands")
     assert !String.contains?(String.downcase(help), "no such command")
   end

@@ -29,9 +29,15 @@ defmodule Facts.CLI do
 
 
   def process([{:help, true}]) do
+    display_switches = @switches
+    |> Enum.map(fn({command, type})-> {command, type, Enum.find(@aliases, {nil, nil}, fn {_alis, full} -> full == command end)} end)
+    |> Enum.map(fn({command, type, {alis, _full}})-> {command, type, (if (alis != nil), do: "(-#{alis})", else: "")} end)
+    |> Enum.map(fn({command, type, alis_display})-> {"--#{Atom.to_string(command)}", type, alis_display} end)
+    |> Enum.map(fn({command_display, type, alis_display})-> "#{command_display} #{alis_display}  #{Kernel.inspect(type)}" end)
+
     help_text = """
     Available commands:
-    --help/-h : Display help
+    #{Enum.join(display_switches, "\n")}
     """
     IO.puts help_text
     help_text
