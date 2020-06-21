@@ -1,19 +1,20 @@
 defmodule PlayerTest do
     use ExUnit.Case
-  
+
     import Facts.Player, only: [feed: 1, new_player: 2, delete_player: 2]
 
     alias Facts.TestUtil
     alias Facts.Data
     alias Facts.Id
-  
+    alias Facts.Event
+
     test "new player" do
-        player_name = "Created Player"
+        player_name = "Ola"
         player_id = Id.hrid(player_name)
         TestUtil.wipe_facts(player_id)
         facts_path = Data.facts_file_path(player_id)
-        event = {{123},{:new, :player},%{name: player_name}}
-        assert {:ok, player_id} == feed event
+        event = Event.new([:new, :player], %{name: player_name})
+        assert {:ok, [{:created, player_id}]} == feed event
         assert File.exists?(facts_path)
         TestUtil.wipe_facts(player_id)
     end
@@ -32,4 +33,3 @@ defmodule PlayerTest do
         assert {:ok, 0} = feed event
     end
   end
-  

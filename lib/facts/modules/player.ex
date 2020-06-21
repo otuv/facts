@@ -9,7 +9,7 @@ defmodule Facts.Player do
         player_id = Id.hrid name
         :ok = new_player event_id, player_id
         :ok = add_fact_name event_id, player_id, name
-        {:ok, player_id}
+        {:ok, [created: player_id]}
     end
 
     def feed(_) do
