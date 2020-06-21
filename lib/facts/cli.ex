@@ -1,5 +1,7 @@
 defmodule Facts.CLI do
 
+  alias Facts.Event
+
   @switches [
     help: :boolean,
     new: :string,
@@ -23,6 +25,8 @@ defmodule Facts.CLI do
       aliases: @aliases
     ]
 
+    IO.puts(Kernel.inspect(args))
+
     {result, _, _} = OptionParser.parse(args, opts)
     result
   end
@@ -41,6 +45,11 @@ defmodule Facts.CLI do
     """
     IO.puts help_text
     help_text
+  end
+
+  def process([{:new, "player"}, {:name, name}]) do
+    Event.new([:new, :player], %{name: name})
+    |> Facts.input()
   end
 
   def process(_) do
