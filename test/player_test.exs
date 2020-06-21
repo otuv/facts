@@ -9,12 +9,12 @@ defmodule PlayerTest do
     alias Facts.Event
 
     test "new player" do
-        player_name = "Ola"
+        player_name = "New Player"
         player_id = Id.hrid(player_name)
         TestUtil.wipe_facts(player_id)
         facts_path = Data.facts_file_path(player_id)
         event = Event.new([:new, :player], %{name: player_name})
-        assert {:ok, [{:created, player_id}]} == feed event
+        assert [{:created, player_id}] == feed event
         assert File.exists?(facts_path)
         TestUtil.wipe_facts(player_id)
     end
@@ -29,7 +29,6 @@ defmodule PlayerTest do
     end
 
     test "basic feed" do
-        event = {{123},{:show, :game},%{id: "abc_efg"}}
-        assert {:ok, 0} = feed event
+        assert [] = feed Event.new([:show, :game], %{id: "abc_efg"})
     end
   end

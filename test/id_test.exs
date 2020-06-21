@@ -5,7 +5,6 @@ defmodule IdTest do
 
     test "guid" do
         id = guid()
-        IO.puts id
         assert 15 == String.length(id)
     end
 end

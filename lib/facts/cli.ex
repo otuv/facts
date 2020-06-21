@@ -50,6 +50,7 @@ defmodule Facts.CLI do
   def process([{:new, "player"}, {:name, name}]) do
     Event.new([:new, :player], %{name: name})
     |> Facts.input()
+    |> (fn [[created: id]] -> {:ok, id} end).()
   end
 
   def process(_) do

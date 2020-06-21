@@ -3,9 +3,12 @@ defmodule CliTest do
 
   import Facts.CLI, only: [parse: 1, process: 1]
 
+  alias Facts.TestUtil
+  alias Facts.Id
+
   test "parse" do
     assert [{:help, true}] == parse(["-h", ""])
-    assert [{:new, "player"}, {:name, "testplayer"}] == parse(["-n", "player", "--name", "testplayer"])
+    assert [{:new, "player"}, {:name, "Parse Player"}] == parse(["-n", "player", "--name", "Parse Player"])
   end
 
   test "help" do
@@ -20,7 +23,11 @@ defmodule CliTest do
   end
 
   test "new player" do
-    {:ok, id} = process [{:new, "player"}, {:name, "newplayer"}]
+    player_name = "New Player CLI"
+    player_id = Id.hrid(player_name)
+    TestUtil.wipe_facts(player_id)
+    {:ok, id} = process [{:new, "player"}, {:name, player_name}]
+    TestUtil.wipe_facts(player_id)
     assert is_bitstring id
   end
 end

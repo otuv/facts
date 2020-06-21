@@ -5,15 +5,14 @@ defmodule Facts.Player do
     alias Facts.Event
 
     def feed(%Event{id: event_id, tags: [:new, :player], data: %{name: name}}) do
-        IO.puts("Adding new player #{name}")
         player_id = Id.hrid name
         :ok = new_player event_id, player_id
         :ok = add_fact_name event_id, player_id, name
-        {:ok, [created: player_id]}
+        [created: player_id]
     end
 
     def feed(_) do
-        {:ok, 0}
+        []
     end
 
 
