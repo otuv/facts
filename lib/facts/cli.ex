@@ -74,14 +74,16 @@ defmodule Facts.CLI do
 
 
   defp display_response([]) do
-    IO.inspect("Done")
+    display_response([[done: ""]])
   end
 
   defp display_response([responses]) when is_list(responses) do
-    responses
+    text = responses
     |> Enum.map(fn {action, identifier} -> Atom.to_string(action) <> ": " <> identifier end)
     |> Enum.join(", ")
-    |> IO.inspect()
+
+    IO.puts(text)
+    text
   end
 
 
