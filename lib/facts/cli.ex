@@ -52,14 +52,14 @@ defmodule Facts.CLI do
   def process([{:new, module_name}, {:name, name}]) do
     Event.new([:new, valid_module(module_name)], %{name: name})
     |> Facts.input()
-    |> (fn [[created: id]] -> {:ok, id} end).()
+    |> (fn [[created: id]] -> {:created, id} end).()
     |> IO.inspect()
   end
 
   def process([{:delete, module_name}, {:id, id}]) do
     Event.new([:delete, valid_module(module_name)], %{id: id})
     |> Facts.input()
-    |> (fn [[deleted: id]] -> {:ok, id} end).()
+    |> (fn [[deleted: id]] -> {:deleted, id} end).()
     |> IO.inspect()
   end
 
