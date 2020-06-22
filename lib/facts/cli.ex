@@ -52,23 +52,38 @@ defmodule Facts.CLI do
   def process([{:new, module_name}, {:name, name}]) do
     Event.new([:new, valid_module(module_name)], %{name: name})
     |> Facts.input()
-    |> (fn [[created: id]] -> {:created, id} end).()
-    |> IO.inspect()
+    |> display_response()
   end
 
   def process([{:delete, module_name}, {:id, id}]) do
     Event.new([:delete, valid_module(module_name)], %{id: id})
     |> Facts.input()
-    |> (fn [[deleted: id]] -> {:deleted, id} end).()
-    |> IO.inspect()
+    |> display_response()
   end
 
   def process(_) do
     help_text = """
     No such command. Use --help/-h to display available commands.
     """
+    display_help(help_text)
+  end
+
+
+  defp display_help(help_text) do
     IO.puts help_text
     help_text
+  end
+
+
+  defp display_response([]) do
+    IO.inspect("Done")
+  end
+
+  defp display_response([responses]) when is_list(responses) do
+    responses
+    |> Enum.map(fn {action, identifier} -> Atom.to_string(action) <> ": " <> identifier end)
+    |> Enum.join(", ")
+    |> IO.inspect(label: "Responses")
   end
 
 
@@ -77,9 +92,13 @@ defmodule Facts.CLI do
       "player" => :player,
     }
 
-    case is_atom(valid_modules[input_string]) do
-      true -> valid_modules[input_string]
-      false -> nil
+    case is_nil(valid_modules[input_string]) do
+      false -> valid_modules[input_string]
+      true ->
+        help_text = """
+        No such object. Use --help-objects to display available objects.
+        """
+        display_help(help_text)
     end
   end
 end
