@@ -49,15 +49,15 @@ defmodule Facts.CLI do
     help_text
   end
 
-  def process([{:new, "player"}, {:name, name}]) do
-    Event.new([:new, :player], %{name: name})
+  def process([{:new, module_name}, {:name, name}]) do
+    Event.new([:new, valid_module(module_name)], %{name: name})
     |> Facts.input()
     |> (fn [[created: id]] -> {:ok, id} end).()
     |> IO.inspect()
   end
 
-  def process([{:delete, "player"}, {:id, id}]) do
-    Event.new([:delete, :player], %{id: id})
+  def process([{:delete, module_name}, {:id, id}]) do
+    Event.new([:delete, valid_module(module_name)], %{id: id})
     |> Facts.input()
     |> (fn [[deleted: id]] -> {:ok, id} end).()
     |> IO.inspect()
@@ -69,5 +69,17 @@ defmodule Facts.CLI do
     """
     IO.puts help_text
     help_text
+  end
+
+
+  defp valid_module(input_string) do
+    valid_modules = %{
+      "player" => :player,
+    }
+
+    case is_atom(valid_modules[input_string]) do
+      true -> valid_modules[input_string]
+      false -> nil
+    end
   end
 end
