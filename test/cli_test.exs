@@ -25,9 +25,9 @@ defmodule CliTest do
   test "new player" do
     player_name = "New Player CLI"
     player_id = Id.hrid(player_name)
-    TestUtil.wipe_facts(player_id)
+    TestUtil.wipe_facts("player", player_id)
     {:ok, id} = process [{:new, "player"}, {:name, player_name}]
-    TestUtil.wipe_facts(player_id)
+    TestUtil.wipe_facts("player", player_id)
     assert is_bitstring id
   end
 end

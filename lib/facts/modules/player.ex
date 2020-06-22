@@ -24,18 +24,18 @@ defmodule Facts.Player do
     end
 
     defp player_exists?(player_id) do
-        File.exists?(Data.facts_file_path(player_id))
+        File.exists?(Data.facts_file_path(__ENV__.module, player_id))
     end
 
     defp create_player_file(origin, player_id) do
-        Data.add_fact(player_id, origin, :created)
+        Data.add_fact(__ENV__.module, player_id, origin, :created)
     end
 
     defp add_fact_name(origin, player_id, name) when is_bitstring(name) do
-        Data.add_fact(player_id, origin, %{name: name})
+        Data.add_fact(__ENV__.module, player_id, origin, %{name: name})
     end
 
     def delete_player(origin, player_id) do
-        Data.add_fact(player_id, origin, :deleted)
+        Data.add_fact(__ENV__.module, player_id, origin, :deleted)
     end
 end

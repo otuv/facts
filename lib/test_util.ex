@@ -1,7 +1,7 @@
 defmodule Facts.TestUtil do
-    import Facts.Data, only: [facts_file_path: 1]
+    alias Facts.Data
 
-    def wipe_facts(id) do
-        File.rm facts_file_path(id)
+    def wipe_facts(module, id) do
+        File.rm Data.facts_file_path(module, id)
     end
 end
