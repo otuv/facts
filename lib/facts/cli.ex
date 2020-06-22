@@ -5,11 +5,13 @@ defmodule Facts.CLI do
   @switches [
     help: :boolean,
     new: :string,
+    delete: :string,
     name: :string,
   ]
   @aliases [
     h: :help,
     n: :new,
+    d: :delete,
   ]
 
   def main(args) do
@@ -51,6 +53,14 @@ defmodule Facts.CLI do
     Event.new([:new, :player], %{name: name})
     |> Facts.input()
     |> (fn [[created: id]] -> {:ok, id} end).()
+    |> IO.inspect()
+  end
+
+  def process([{:delete, "player"}, {:id, id}]) do
+    Event.new([:delete, :player], %{id: id})
+    |> Facts.input()
+    |> (fn [[deleted: id]] -> {:ok, id} end).()
+    |> IO.inspect()
   end
 
   def process(_) do

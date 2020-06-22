@@ -11,6 +11,11 @@ defmodule Facts.Player do
         [created: player_id]
     end
 
+    def feed(%Event{id: event_id, tags: [:delete, :player], data: %{id: player_id}}) do
+        :ok = delete_player event_id, player_id
+        [deleted: player_id]
+    end
+
     def feed(_) do
         []
     end

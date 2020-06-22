@@ -9,6 +9,7 @@ defmodule CliTest do
   test "parse" do
     assert [{:help, true}] == parse(["-h", ""])
     assert [{:new, "player"}, {:name, "Parse Player"}] == parse(["-n", "player", "--name", "Parse Player"])
+    assert [{:delete, "player"}, {:id, "Delete Player"}] == parse(["-d", "player", "--id", "Delete Player"])
   end
 
   test "help" do
