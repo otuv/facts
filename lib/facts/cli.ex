@@ -27,8 +27,6 @@ defmodule Facts.CLI do
       aliases: @aliases
     ]
 
-    IO.puts(Kernel.inspect(args))
-
     {result, _, _} = OptionParser.parse(args, opts)
     result
   end
@@ -83,7 +81,7 @@ defmodule Facts.CLI do
     responses
     |> Enum.map(fn {action, identifier} -> Atom.to_string(action) <> ": " <> identifier end)
     |> Enum.join(", ")
-    |> IO.inspect(label: "Responses")
+    |> IO.inspect()
   end
 
 
@@ -96,7 +94,7 @@ defmodule Facts.CLI do
       false -> valid_modules[input_string]
       true ->
         help_text = """
-        No such object. Use --help-objects to display available objects.
+        No such object "#{input_string}". Use --available-objects to display available objects.
         """
         display_help(help_text)
     end
