@@ -5,12 +5,17 @@ defmodule Facts.CLI do
   @switches [
     help: :boolean,
     create: :string,
+    read: :string,
+    update: :string,
     delete: :string,
+    id: :string,
     name: :string,
   ]
   @aliases [
     h: :help,
     c: :create,
+    r: :read,
+    u: :update,
     d: :delete,
   ]
 
@@ -49,6 +54,12 @@ defmodule Facts.CLI do
 
   def process([{:create, module_name}, {:name, name}]) do
     Event.new([:create, valid_module(module_name)], %{name: name})
+    |> Facts.input()
+    |> display_response()
+  end
+
+  def process([{:read, module_name}, {:id, id}]) do
+    Event.new([:read, valid_module(module_name)], %{id: id})
     |> Facts.input()
     |> display_response()
   end

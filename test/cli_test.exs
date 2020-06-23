@@ -36,7 +36,7 @@ defmodule CliTest do
     player_id = Id.hrid(player_name)
     TestUtil.wipe_facts("player", player_id)
     process [{:create, "player"}, {:name, player_name}]
-    assert "{id: #{player_id}, name: #{player_name}" == process [{:read, "player"}, {:id, player_id}]
+    assert "read: id: #{player_id}, created, name: #{player_name}" == process [{:read, "player"}, {:id, player_id}]
     TestUtil.wipe_facts("player", player_id)
   end
 
@@ -46,7 +46,7 @@ defmodule CliTest do
     TestUtil.wipe_facts("player", player_id)
     process [{:create, "player"}, {:name, player_name}]
     new_player_name = "Updated Player CLI"
-    assert "updated: #{player_id} :: name -> #{new_player_name}"  == process [{:update, "player"}, {:id, player_id}, {:name, new_player_name}]
+    assert "updated: #{player_id} :: name -> #{new_player_name}" == process [{:update, "player"}, {:id, player_id}, {:name, new_player_name}]
     TestUtil.wipe_facts("player", player_id)
   end
 

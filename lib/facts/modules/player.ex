@@ -11,6 +11,16 @@ defmodule Facts.Player do
         [created: player_id]
     end
 
+    def feed(%Event{id: _event_id, tags: [:read, :player], data: %{id: player_id}}) do
+        facts = read_facts(player_id)
+        |> Enum.map(fn f -> parse_fact(f) end)
+        |> List.insert_at(0, "id: #{player_id}")
+        |> Enum.join(", ")
+        IO.inspect(facts, label: "facts")
+
+        [read: facts]
+    end
+
     def feed(%Event{id: event_id, tags: [:delete, :player], data: %{id: player_id}}) do
         :ok = delete_player event_id, player_id
         [deleted: player_id]
@@ -28,23 +38,42 @@ defmodule Facts.Player do
         end
     end
 
+
     defp player_exists?(player_id) do
         File.exists?(Data.facts_file_path(__ENV__.module, player_id))
     end
+
 
     defp create_player_file(origin, player_id) do
         add_fact(origin, player_id, :created)
     end
 
+
     defp add_fact_name(origin, player_id, name) when is_bitstring(name) do
         add_fact(origin, player_id, %{name: name})
     end
+
 
     def delete_player(origin, player_id) do
         add_fact(origin, player_id, :deleted)
     end
 
+
     defp add_fact(origin, player_id, data) do
         Data.add_fact(__ENV__.module, player_id, origin, data)
+    end
+
+
+    defp read_facts(player_id) do
+        Data.get_facts(__ENV__.module, player_id)
+    end
+
+
+    defp parse_fact({_origin, %{name: name}}) do
+        "name: #{name}"
+    end
+
+    defp parse_fact({_origin, :created}) do
+        "created"
     end
 end
