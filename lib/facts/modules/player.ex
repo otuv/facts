@@ -33,14 +33,18 @@ defmodule Facts.Player do
     end
 
     defp create_player_file(origin, player_id) do
-        Data.add_fact(__ENV__.module, player_id, origin, :created)
+        add_fact(origin, player_id, :created)
     end
 
     defp add_fact_name(origin, player_id, name) when is_bitstring(name) do
-        Data.add_fact(__ENV__.module, player_id, origin, %{name: name})
+        add_fact(origin, player_id, %{name: name})
     end
 
     def delete_player(origin, player_id) do
-        Data.add_fact(__ENV__.module, player_id, origin, :deleted)
+        add_fact(origin, player_id, :deleted)
+    end
+
+    defp add_fact(origin, player_id, data) do
+        Data.add_fact(__ENV__.module, player_id, origin, data)
     end
 end
