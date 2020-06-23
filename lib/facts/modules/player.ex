@@ -14,11 +14,9 @@ defmodule Facts.Player do
     def feed(%Event{id: _event_id, tags: [:read, :player], data: %{id: player_id}}) do
         facts = read_facts(player_id)
         |> Enum.map(fn f -> parse_fact(f) end)
-        |> List.insert_at(0, "id: #{player_id}")
         |> Enum.join(", ")
-        IO.inspect(facts, label: "facts")
 
-        [read: facts]
+        [read: "#{player_id} :: " <> facts]
     end
 
     def feed(%Event{id: event_id, tags: [:delete, :player], data: %{id: player_id}}) do
