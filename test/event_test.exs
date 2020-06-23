@@ -4,7 +4,7 @@ defmodule EventTest do
     alias Facts.Event
 
     test "new event" do
-        tags = [:new, :test]
+        tags = [:create, :test]
         data = %{data: "testing"}
         assert %Event{id: _guid, tags: tags, data: data} = Event.new(tags, data)
     end

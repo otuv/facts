@@ -4,13 +4,13 @@ defmodule Facts.CLI do
 
   @switches [
     help: :boolean,
-    new: :string,
+    create: :string,
     delete: :string,
     name: :string,
   ]
   @aliases [
     h: :help,
-    n: :new,
+    c: :create,
     d: :delete,
   ]
 
@@ -47,8 +47,8 @@ defmodule Facts.CLI do
     help_text
   end
 
-  def process([{:new, module_name}, {:name, name}]) do
-    Event.new([:new, valid_module(module_name)], %{name: name})
+  def process([{:create, module_name}, {:name, name}]) do
+    Event.new([:create, valid_module(module_name)], %{name: name})
     |> Facts.input()
     |> display_response()
   end
