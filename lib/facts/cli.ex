@@ -64,6 +64,12 @@ defmodule Facts.CLI do
     |> display_response()
   end
 
+  def process([{:update, module_name}, {:id, id}, {:name, name}]) do
+    Event.new([:update, valid_module(module_name)], %{id: id, name: name})
+    |> Facts.input()
+    |> display_response()
+  end
+
   def process([{:delete, module_name}, {:id, id}]) do
     Event.new([:delete, valid_module(module_name)], %{id: id})
     |> Facts.input()

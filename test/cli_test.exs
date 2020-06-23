@@ -36,7 +36,7 @@ defmodule CliTest do
     player_id = Id.hrid(player_name)
     TestUtil.wipe_facts("player", player_id)
     process [{:create, "player"}, {:name, player_name}]
-    assert "read: id: #{player_id}, created, name: #{player_name}" == process [{:read, "player"}, {:id, player_id}]
+    assert "read: #{player_id} :: created, name: #{player_name}" == process [{:read, "player"}, {:id, player_id}]
     TestUtil.wipe_facts("player", player_id)
   end
 
