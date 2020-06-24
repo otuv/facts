@@ -4,11 +4,18 @@ defmodule Facts.Deck do
   alias Facts.Data
   alias Facts.Event
 
-  def feed(%Event{id: event_id, tags: [:create, :deck], data: %{name: name}}) do
+  @spec feed(any) :: [
+          {:created, <<_::64, _::_*8>>}
+          | {:deleted, binary}
+          | {:read, <<_::32, _::_*8>>}
+          | {:updated, <<_::64, _::_*8>>}
+        ]
+  def feed(%Event{id: event_id, tags: [:create, :deck], data: %{name: name, owner: owner_id}}) do
       deck_id = Id.hrid name
       :ok = create_deck event_id, deck_id
       :ok = add_fact_name event_id, deck_id, name
-      [created: deck_id]
+      :ok = add_fact_owner event_id, deck_id, owner_id
+      [created: deck_id <> ", owner: " <> owner_id]
   end
 
   def feed(%Event{id: _event_id, tags: [:read, :deck], data: %{id: deck_id}}) do
@@ -55,6 +62,10 @@ defmodule Facts.Deck do
 
   defp add_fact_name(origin, deck_id, name) when is_bitstring(name) do
       add_fact(origin, deck_id, %{name: name})
+  end
+
+  defp add_fact_owner(origin, deck_id, owner_id) when is_bitstring(owner_id) do
+      add_fact(origin, deck_id, %{owner: owner_id})
   end
 
 

@@ -66,19 +66,19 @@ defmodule CliTest do
 
   test "create deck" do
     #Need a player as owner
-    player_name = "Create Deck Player CLI"
-    player_id = Id.hrid(player_name)
-    TestUtil.wipe_facts("player", player_id)
-    process [{:create, "player"}, {:name, player_name}]
+    owner_name = "Create Deck Player CLI"
+    owner_id = Id.hrid(owner_name)
+    TestUtil.wipe_facts("player", owner_id)
+    process [{:create, "player"}, {:name, owner_name}]
 
     #Create deck
     deck_name = "Create Deck CLI"
     deck_id = Id.hrid(deck_name)
     TestUtil.wipe_facts("deck", deck_id)
-    assert "created: #{deck_id}, owner: #{player_id}" == process [{:create, "deck"}, {:name, deck_name}]
+    assert "created: #{deck_id}, owner: #{owner_id}" == process [{:create, "deck"}, {:name, deck_name}, {:owner, owner_id}]
 
     #Cleanup
     TestUtil.wipe_facts("deck", deck_id)
-    TestUtil.wipe_facts("player", player_id)
+    TestUtil.wipe_facts("player", owner_id)
   end
 end

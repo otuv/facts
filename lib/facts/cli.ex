@@ -10,6 +10,7 @@ defmodule Facts.CLI do
     delete: :string,
     id: :string,
     name: :string,
+    owner: :string,
   ]
   @aliases [
     h: :help,
@@ -54,6 +55,13 @@ defmodule Facts.CLI do
 
   def process([{:create, module_name}, {:name, name}]) do
     Event.new([:create, valid_module(module_name)], %{name: name})
+    |> Facts.input()
+    |> display_response()
+  end
+
+  def process([{:create, module_name}, {:name, name}, {:owner, owner_id}]) do
+    Event.new([:create, valid_module(module_name)], %{name: name, owner: owner_id})
+      |> IO.inspect(label: "deck")
     |> Facts.input()
     |> display_response()
   end
