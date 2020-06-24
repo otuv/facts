@@ -54,33 +54,23 @@ defmodule Facts.CLI do
   end
 
   def process([{:create, module_name}, {:name, name}]) do
-    Event.new([:create, valid_module(module_name)], %{name: name})
-    |> Facts.input()
-    |> display_response()
+    run Event.new([:create, valid_module(module_name)], %{name: name})
   end
 
   def process([{:create, module_name}, {:name, name}, {:owner, owner_id}]) do
-    Event.new([:create, valid_module(module_name)], %{name: name, owner: owner_id})
-    |> Facts.input()
-    |> display_response()
+    run Event.new([:create, valid_module(module_name)], %{name: name, owner: owner_id})
   end
 
   def process([{:read, module_name}, {:id, id}]) do
-    Event.new([:read, valid_module(module_name)], %{id: id})
-    |> Facts.input()
-    |> display_response()
+    run Event.new([:read, valid_module(module_name)], %{id: id})
   end
 
   def process([{:update, module_name}, {:id, id}, {:name, name}]) do
-    Event.new([:update, valid_module(module_name)], %{id: id, name: name})
-    |> Facts.input()
-    |> display_response()
+    run Event.new([:update, valid_module(module_name)], %{id: id, name: name})
   end
 
   def process([{:delete, module_name}, {:id, id}]) do
-    Event.new([:delete, valid_module(module_name)], %{id: id})
-    |> Facts.input()
-    |> display_response()
+    run Event.new([:delete, valid_module(module_name)], %{id: id})
   end
 
   def process(_) do
@@ -88,6 +78,13 @@ defmodule Facts.CLI do
     No such command. Use --help/-h to display available commands.
     """
     display_help(help_text)
+  end
+
+
+  defp run(event) do
+    event
+    |> Facts.input()
+    |> display_response()
   end
 
 
