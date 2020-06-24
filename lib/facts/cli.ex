@@ -107,6 +107,7 @@ defmodule Facts.CLI do
   defp valid_module(input_string) do
     valid_modules = %{
       "player" => :player,
+      "deck" => :deck,
     }
 
     case is_nil(valid_modules[input_string]) do
