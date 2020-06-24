@@ -61,7 +61,6 @@ defmodule Facts.CLI do
 
   def process([{:create, module_name}, {:name, name}, {:owner, owner_id}]) do
     Event.new([:create, valid_module(module_name)], %{name: name, owner: owner_id})
-      |> IO.inspect(label: "deck")
     |> Facts.input()
     |> display_response()
   end
