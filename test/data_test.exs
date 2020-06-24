@@ -21,4 +21,13 @@ defmodule DataTest do
         assert 3 == Enum.count facts
         TestUtil.wipe_facts(__ENV__.module, id)
     end
+
+    test "facts" do
+        origin = "ori_ghin"
+        data = %{name: "Fact"}
+        prior = DateTime.utc_now()
+            |> DateTime.to_unix(:millisecond)
+        {^origin, timestamp, ^data} = Data.fact(origin, data)
+        assert prior <= timestamp
+    end
 end

@@ -22,7 +22,7 @@ defmodule Facts.Data do
   end
 
   def fact(origin, data) do
-    {origin, data}
+    {origin, DateTime.to_unix(DateTime.utc_now(), :millisecond),data}
   end
 
   def add_fact(module, id, origin, data) do

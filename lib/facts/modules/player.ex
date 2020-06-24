@@ -73,11 +73,14 @@ defmodule Facts.Player do
     end
 
 
-    defp parse_fact({_origin, %{name: name}}) do
+    defp parse_fact({_origin, _timestamp, %{name: name}}) do
         "name: #{name}"
     end
 
-    defp parse_fact({_origin, :created}) do
-        "created"
+    defp parse_fact({_origin, timestamp, :created}) do
+        timestamp
+        |> DateTime.from_unix!(:millisecond)
+        |> DateTime.to_iso8601()
+        |> (fn ts -> "created " <> ts end).()
     end
 end
