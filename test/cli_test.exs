@@ -75,7 +75,7 @@ defmodule CliTest do
     deck_name = "Create Deck CLI"
     deck_id = Id.hrid(deck_name)
     TestUtil.wipe_facts("deck", deck_id)
-    assert "created: #{deck_id}, owner: #{owner_id}" == process [{:create, "deck"}, {:name, deck_name}, {:owner, owner_id}]
+    assert "created: #{deck_id}, owner id: #{owner_id}" == process [{:create, "deck"}, {:name, deck_name}, {:owner_id, owner_id}]
 
     #Cleanup
     TestUtil.wipe_facts("deck", deck_id)

@@ -52,7 +52,7 @@ defmodule Facts.CLI do
   end
 
   def process([{:create, module_name}, {:name, name}, {:owner, owner_id}]) do
-    run Event.new([:create, valid_module(module_name)], %{name: name, owner: owner_id})
+    run Event.new([:create, valid_module(module_name)], %{name: name, owner_id: owner_id})
   end
 
   def process([{:read, module_name}, {:id, id}]) do

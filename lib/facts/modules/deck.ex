@@ -10,12 +10,12 @@ defmodule Facts.Deck do
           | {:read, <<_::32, _::_*8>>}
           | {:updated, <<_::64, _::_*8>>}
         ]
-  def feed(%Event{id: event_id, tags: [:create, :deck], data: %{name: name, owner: owner_id}}) do
+  def feed(%Event{id: event_id, tags: [:create, :deck], data: %{name: name, owner_id: owner_id}}) do
       deck_id = Id.hrid name
       :ok = create_deck event_id, deck_id
       :ok = add_fact_name event_id, deck_id, name
-      :ok = add_fact_owner event_id, deck_id, owner_id
-      [created: deck_id <> ", owner: " <> owner_id]
+      :ok = add_fact_owner_id event_id, deck_id, owner_id
+      [created: deck_id <> ", owner id: " <> owner_id]
   end
 
   def feed(%Event{id: _event_id, tags: [:read, :deck], data: %{id: deck_id}}) do
@@ -35,6 +35,16 @@ defmodule Facts.Deck do
   def feed(%Event{id: event_id, tags: [:delete, :deck], data: %{id: deck_id}}) do
       :ok = delete_deck event_id, deck_id
       [deleted: deck_id]
+  end
+
+  def feed(%Event{id: event_id, tags: tags, data: _data} = e) do
+    case Enum.any?(tags, fn t -> t == :deck end) do
+        true  ->
+            IO.inspect(e, label: "Failing event")
+            [failure: event_id]
+        false ->
+            [failure: event_id]
+    end
   end
 
   def feed(_) do
@@ -64,8 +74,8 @@ defmodule Facts.Deck do
       add_fact(origin, deck_id, %{name: name})
   end
 
-  defp add_fact_owner(origin, deck_id, owner_id) when is_bitstring(owner_id) do
-      add_fact(origin, deck_id, %{owner: owner_id})
+  defp add_fact_owner_id(origin, deck_id, owner_id) when is_bitstring(owner_id) do
+      add_fact(origin, deck_id, %{owner_id: owner_id})
   end
 
 
@@ -86,6 +96,10 @@ defmodule Facts.Deck do
 
   defp parse_fact({_origin, _timestamp, %{name: name}}) do
       "name: #{name}"
+  end
+
+  defp parse_fact({_origin, _timestamp, %{owner_id: owner_id}}) do
+      "owner_id: #{owner_id}"
   end
 
   defp parse_fact({_origin, timestamp, :created}) do
