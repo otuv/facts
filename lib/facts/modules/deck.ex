@@ -15,7 +15,7 @@ defmodule Facts.Deck do
       :ok = create_deck event_id, deck_id
       :ok = add_fact_name event_id, deck_id, name
       :ok = add_fact_player_id event_id, deck_id, player_id
-      [created: deck_id <> ", owner id: " <> player_id]
+      [created: deck_id <> ", player id: " <> player_id]
   end
 
   def feed(%Event{id: _event_id, tags: [:read, :deck], data: %{id: deck_id}}) do

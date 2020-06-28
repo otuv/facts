@@ -12,6 +12,8 @@ defmodule Facts.Id do
             "hug", "bot", "pot", "bat", "fat",
             "car", "far", "bar", "foo", "how",
             "jar", "par", "sub", "hub", "cub",
+            "hop", "tap", "fit", "hit", "big",
+            "rot", "wit", "met", "pal", "lap"
         ]
         |> Enum.take_random(4)
         |> Enum.join("_")

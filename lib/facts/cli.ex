@@ -10,7 +10,7 @@ defmodule Facts.CLI do
     delete: :string,
     id: :string,
     name: :string,
-    owner: :string,
+    playerid: :string,
   ]
   @aliases [
     h: :help,
@@ -52,7 +52,11 @@ defmodule Facts.CLI do
     run Event.new([:create, valid_module(module_name)], %{name: name})
   end
 
-  def process([{:create, module_name}, {:name, name}, {:player_id, player_id}]) do
+  def process([{:create, module_name}, {:playerid, player_id}]) do
+    run Event.new([:create, valid_module(module_name)], %{player_id: player_id})
+  end
+
+  def process([{:create, module_name}, {:name, name}, {:playerid, player_id}]) do
     run Event.new([:create, valid_module(module_name)], %{name: name, player_id: player_id})
   end
 
@@ -107,6 +111,7 @@ defmodule Facts.CLI do
     valid_modules = %{
       "player" => :player,
       "deck" => :deck,
+      "game" => :game,
     }
 
     case is_nil(valid_modules[input_string]) do

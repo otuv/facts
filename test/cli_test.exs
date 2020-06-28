@@ -65,20 +65,46 @@ defmodule CliTest do
 
 
   test "create deck" do
-    #Need a player as owner
-    owner_name = "Create Deck Player CLI"
-    player_id = Id.hrid(owner_name)
+    #Need a player as player
+    player_name = "Create Deck Player CLI"
+    player_id = Id.hrid(player_name)
     TestUtil.wipe_facts("player", player_id)
-    process [{:create, "player"}, {:name, owner_name}]
+    process [{:create, "player"}, {:name, player_name}]
 
     #Create deck
     deck_name = "Create Deck CLI"
     deck_id = Id.hrid(deck_name)
     TestUtil.wipe_facts("deck", deck_id)
-    assert "created: #{deck_id}, owner id: #{player_id}" == process [{:create, "deck"}, {:name, deck_name}, {:player_id, player_id}]
+    assert "created: #{deck_id}, player id: #{player_id}" == process [{:create, "deck"}, {:name, deck_name}, {:player_id, player_id}]
 
     #Cleanup
     TestUtil.wipe_facts("deck", deck_id)
     TestUtil.wipe_facts("player", player_id)
+  end
+
+
+  test "create game" do
+    #Need a player as player and player
+    player_name = "Create Game Player CLI"
+    player_id = Id.hrid(player_name)
+    TestUtil.wipe_facts("player", player_id)
+    process [{:create, "player"}, {:name, player_name}]
+
+    #Need as participating deck
+    deck_name = "Create Game Decj CLI"
+    deck_id = Id.hrid(deck_name)
+    TestUtil.wipe_facts("deck", deck_id)
+    result = process [{:create, "game"}, {:player_id, player_id}]
+    game_id = result
+      |> String.replace(",", "")
+      |> String.split(" ")
+      |> Enum.at(1)
+
+    assert "created: #{game_id}, player id: #{player_id}" == result
+
+    #Cleanup
+    TestUtil.wipe_facts("deck", deck_id)
+    TestUtil.wipe_facts("player", player_id)
+    TestUtil.wipe_facts("game", game_id)
   end
 end
