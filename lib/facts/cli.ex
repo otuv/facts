@@ -34,6 +34,7 @@ defmodule Facts.CLI do
     ]
 
     {result, _, _} = OptionParser.parse(args, opts)
+    IO.inspect(result, label: "args")
     result
   end
 
@@ -51,8 +52,8 @@ defmodule Facts.CLI do
     run Event.new([:create, valid_module(module_name)], %{name: name})
   end
 
-  def process([{:create, module_name}, {:name, name}, {:owner, owner_id}]) do
-    run Event.new([:create, valid_module(module_name)], %{name: name, owner_id: owner_id})
+  def process([{:create, module_name}, {:name, name}, {:player_id, player_id}]) do
+    run Event.new([:create, valid_module(module_name)], %{name: name, player_id: player_id})
   end
 
   def process([{:read, module_name}, {:id, id}]) do
