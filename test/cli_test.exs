@@ -31,6 +31,16 @@ defmodule CliTest do
     TestUtil.wipe_facts("player", player_id)
   end
 
+
+  test "create player hrc" do
+    player_name = "Adam"
+    player_id = Id.hrid(player_name)
+    TestUtil.wipe_facts("player", player_id)
+    assert "created: #{player_id}" == process [{:h, "create player with name Adam"}]
+    TestUtil.wipe_facts("player", player_id)
+  end
+
+
   test "read player" do
     player_name = "Read Player CLI"
     player_id = Id.hrid(player_name)
@@ -75,7 +85,7 @@ defmodule CliTest do
     deck_name = "Create Deck CLI"
     deck_id = Id.hrid(deck_name)
     TestUtil.wipe_facts("deck", deck_id)
-    assert "created: #{deck_id}, player id: #{player_id}" == process [{:create, "deck"}, {:name, deck_name}, {:player_id, player_id}]
+    assert "created: #{deck_id}, player id: #{player_id}" == process [{:create, "deck"}, {:name, deck_name}, {:playerid, player_id}]
 
     #Cleanup
     TestUtil.wipe_facts("deck", deck_id)
@@ -94,7 +104,7 @@ defmodule CliTest do
     deck_name = "Create Game Decj CLI"
     deck_id = Id.hrid(deck_name)
     TestUtil.wipe_facts("deck", deck_id)
-    result = process [{:create, "game"}, {:player_id, player_id}]
+    result = process [{:create, "game"}, {:playerid, player_id}]
     game_id = result
       |> String.replace(",", "")
       |> String.split(" ")
