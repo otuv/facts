@@ -5,7 +5,6 @@ defmodule HRCTest do
 
   test "parse create player" do
     data = HRC.parse("create player with name Adam")
-    IO.inspect(data, label: "data")
     assert is_struct(data)
     assert data.predicate == :create
     assert data.subject == :player
@@ -14,10 +13,26 @@ defmodule HRCTest do
 
   test "parse create deck" do
     data = HRC.parse("create deck with name Rush and player_id adam")
-    IO.inspect(data, label: "data")
     assert is_struct(data)
     assert data.predicate == :create
     assert data.subject == :deck
     assert data.details == %{name: "Rush", player_id: "adam"}
   end
+
+  test "parse create game" do
+    data = HRC.parse("create game with player_id adam")
+    assert is_struct(data)
+    assert data.predicate == :create
+    assert data.subject == :game
+    assert data.details == %{player_id: "adam"}
+  end
+
+  test "parse append deck" do
+    data = HRC.parse("append deck with id rush and color red")
+    assert is_struct(data)
+    assert data.predicate == :append
+    assert data.subject == :deck
+    assert data.details == %{id: "rush", color: "red" }
+  end
+
 end

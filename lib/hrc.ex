@@ -1,5 +1,5 @@
 defmodule Facts.HRC do
-  defstruct predicate: nil, subject: nil, details: %{}
+  defstruct predicate: nil, subject: nil, id: nil, details: %{}
 
   alias Facts.HRC
 
