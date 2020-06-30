@@ -9,6 +9,7 @@ defmodule Facts.HRC do
     |> (fn bits -> {bits, %HRC{}} end).()
     |> parse_predicate()
     |> parse_subject()
+    |> parse_id()
     |> parse_details()
   end
 
@@ -22,6 +23,19 @@ defmodule Facts.HRC do
     {remaining, Map.put(acc, :subject, String.to_atom(subject))}
   end
 
+
+  defp parse_id({["with"|_remaining] = data_with_no_id, %{} = acc}) do
+    {data_with_no_id, acc}
+  end
+
+  defp parse_id({[id|remaining], %{} = acc}) do
+    {remaining, Map.put(acc, :id, id)}
+  end
+
+
+  defp parse_details({[], %{} = acc}) do
+    acc
+  end
 
   defp parse_details({["with"|bits], %{} = acc}) do
     bits
