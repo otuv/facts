@@ -36,7 +36,7 @@ defmodule CliTest do
     player_name = "Adam"
     player_id = Id.hrid(player_name)
     TestUtil.wipe_facts("player", player_id)
-    assert "created: #{player_id}" == process [{:hrc, "create player with name Adam"}]
+    assert "created: #{player_id}" == process [{:hrc, "create player Adam"}]
     TestUtil.wipe_facts("player", player_id)
   end
 
@@ -51,6 +51,20 @@ defmodule CliTest do
     assert "read:" == Enum.at(display_chunks, 0)
     assert player_id == Enum.at(display_chunks, 1)
     assert player_name == Enum.join(Enum.take(display_chunks, -3), " ")
+    TestUtil.wipe_facts("player", player_id)
+  end
+
+
+  test "read player hrc" do
+    player_name = "Bertil"
+    player_id = Id.hrid(player_name)
+    TestUtil.wipe_facts("player", player_id)
+    process [{:hrc, "create player Bertil"}]
+    display = process [{:hrc, "read player bertil"}]
+    display_chunks = String.split(display, " ")
+    assert "read:" == Enum.at(display_chunks, 0)
+    assert player_id == Enum.at(display_chunks, 1)
+    assert player_name == Enum.join(Enum.take(display_chunks, -1), " ")
     TestUtil.wipe_facts("player", player_id)
   end
 

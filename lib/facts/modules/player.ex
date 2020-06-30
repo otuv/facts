@@ -4,6 +4,7 @@ defmodule Facts.Player do
     alias Facts.Data
     alias Facts.Event
 
+    def feed(%Event{id: event_id, tags: [:create, :player], data: %{id: id}}), do: feed(%Event{id: event_id, tags: [:create, :player], data: %{name: id}})
     def feed(%Event{id: event_id, tags: [:create, :player], data: %{name: name}}) do
         player_id = Id.hrid name
         :ok = create_player event_id, player_id

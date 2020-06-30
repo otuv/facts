@@ -8,8 +8,7 @@ defmodule HRCTest do
     assert is_struct(data)
     assert data.predicate == :create
     assert data.subject == :player
-    assert data.id == "Adam"
-    assert data.details == %{}
+    assert data.details == %{id: "Adam"}
   end
 
   test "parse create deck" do
@@ -17,8 +16,7 @@ defmodule HRCTest do
     assert is_struct(data)
     assert data.predicate == :create
     assert data.subject == :deck
-    assert data.id == "Rush"
-    assert data.details == %{player_id: "adam"}
+    assert data.details == %{id: "Rush", player_id: "adam"}
   end
 
   test "parse create game" do
@@ -26,7 +24,6 @@ defmodule HRCTest do
     assert is_struct(data)
     assert data.predicate == :create
     assert data.subject == :game
-    assert data.id == nil
     assert data.details == %{player_id: "adam"}
   end
 
@@ -35,8 +32,7 @@ defmodule HRCTest do
     assert is_struct(data)
     assert data.predicate == :append
     assert data.subject == :deck
-    assert data.id == "rush"
-    assert data.details == %{theme: "trolls", color: "green"}
+    assert data.details == %{id: "rush", theme: "trolls", color: "green"}
   end
 
   test "parse read deck" do
@@ -44,8 +40,7 @@ defmodule HRCTest do
     assert is_struct(data)
     assert data.predicate == :read
     assert data.subject == :deck
-    assert data.id == "rush"
-    assert data.details == %{}
+    assert data.details == %{id: "rush"}
   end
 
 end

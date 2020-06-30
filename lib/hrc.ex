@@ -1,5 +1,5 @@
 defmodule Facts.HRC do
-  defstruct predicate: nil, subject: nil, id: nil, details: %{}
+  defstruct predicate: nil, subject: nil, details: %{}
 
   alias Facts.HRC
 
@@ -29,7 +29,7 @@ defmodule Facts.HRC do
   end
 
   defp parse_id({[id|remaining], %{} = acc}) do
-    {remaining, Map.put(acc, :id, id)}
+    {remaining, Map.put(acc, :details, %{id: id})}
   end
 
 
