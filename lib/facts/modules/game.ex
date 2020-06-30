@@ -14,16 +14,22 @@ defmodule Facts.Game do
       game_id = Id.guid()
       :ok = create_game event_id, game_id
       :ok = add_fact_player_id event_id, game_id, player_id
-      [created: game_id <> ", player id: " <> player_id]
+      [created: game_id]
   end
 
   def feed(%Event{id: _event_id, tags: [:read, :game], data: %{id: game_id}}) do
       facts = read_facts(game_id)
       |> Enum.map(fn f -> parse_fact(f) end)
-      |> Enum.join(", ")
+      |> Enum.join(" - ")
 
       [read: "#{game_id} :: " <> facts]
   end
+
+  def feed(%Event{id: event_id, tags: [:append, :game], data: data}) do
+    :ok = add_fact_result event_id, data.id, data
+    [appended: "#{data.id}"]
+  end
+
 
   def feed(%Event{id: event_id, tags: [:delete, :game], data: %{id: game_id}}) do
       :ok = delete_game event_id, game_id
@@ -57,6 +63,10 @@ defmodule Facts.Game do
       add_fact(origin, game_id, %{player_id: player_id})
   end
 
+  defp add_fact_result(origin, game_id, %{player_id: _player_id, deck_id: _deck_id, place: _place, id: _id} = result) do
+      add_fact(origin, game_id, %{result: result})
+  end
+
 
   def delete_game(origin, game_id) do
       add_fact(origin, game_id, :deleted)
@@ -79,6 +89,10 @@ defmodule Facts.Game do
 
   defp parse_fact({_origin, _timestamp, %{player_id: player_id}}) do
       "player_id: #{player_id}"
+  end
+
+  defp parse_fact({_origin, _timestamp, %{result: %{deck_id: deck_id, id: _result_id, place: place, player_id: player_id}}}) do
+      "result: #{player_id} #{deck_id} #{place}"
   end
 
   defp parse_fact({_origin, timestamp, :created}) do

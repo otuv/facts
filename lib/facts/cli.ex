@@ -36,7 +36,6 @@ defmodule Facts.CLI do
     ]
 
     {result, _, _} = OptionParser.parse(args, opts)
-    IO.inspect(result, label: "args")
     result
   end
 
