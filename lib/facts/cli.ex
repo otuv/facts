@@ -1,6 +1,7 @@
 defmodule Facts.CLI do
 
   alias Facts.Event
+  alias Facts.HRC
 
   @switches [
     help: :boolean,
@@ -11,6 +12,7 @@ defmodule Facts.CLI do
     id: :string,
     name: :string,
     playerid: :string,
+    hrc: :string,
   ]
   @aliases [
     h: :help,
@@ -34,7 +36,6 @@ defmodule Facts.CLI do
     ]
 
     {result, _, _} = OptionParser.parse(args, opts)
-    IO.inspect(result, label: "args")
     result
   end
 
@@ -47,6 +48,14 @@ defmodule Facts.CLI do
     IO.puts help_text
     help_text
   end
+
+  def process([{:hrc, command}]) do
+    command
+    |> HRC.parse()
+    |> Event.new()
+    |> run()
+  end
+
 
   def process([{:create, module_name}, {:name, name}]) do
     run Event.new([:create, valid_module(module_name)], %{name: name})

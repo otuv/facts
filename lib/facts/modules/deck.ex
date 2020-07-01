@@ -10,18 +10,19 @@ defmodule Facts.Deck do
           | {:read, <<_::32, _::_*8>>}
           | {:updated, <<_::64, _::_*8>>}
         ]
+  def feed(%Event{id: event_id, tags: [:create, :deck], data: %{id: id, player_id: player_id}}), do: feed(%Event{id: event_id, tags: [:create, :deck], data: %{name: id, player_id: player_id}})
   def feed(%Event{id: event_id, tags: [:create, :deck], data: %{name: name, player_id: player_id}}) do
       deck_id = Id.hrid name
       :ok = create_deck event_id, deck_id
       :ok = add_fact_name event_id, deck_id, name
       :ok = add_fact_player_id event_id, deck_id, player_id
-      [created: deck_id <> ", player id: " <> player_id]
+      [created: deck_id]
   end
 
   def feed(%Event{id: _event_id, tags: [:read, :deck], data: %{id: deck_id}}) do
       facts = read_facts(deck_id)
       |> Enum.map(fn f -> parse_fact(f) end)
-      |> Enum.join(", ")
+      |> Enum.join(" - ")
 
       [read: "#{deck_id} :: " <> facts]
   end

@@ -31,6 +31,16 @@ defmodule CliTest do
     TestUtil.wipe_facts("player", player_id)
   end
 
+
+  test "create player hrc" do
+    player_name = "Adam"
+    player_id = Id.hrid(player_name)
+    TestUtil.wipe_facts("player", player_id)
+    assert "created: #{player_id}" == process [{:hrc, "create player Adam"}]
+    TestUtil.wipe_facts("player", player_id)
+  end
+
+
   test "read player" do
     player_name = "Read Player CLI"
     player_id = Id.hrid(player_name)
@@ -41,6 +51,20 @@ defmodule CliTest do
     assert "read:" == Enum.at(display_chunks, 0)
     assert player_id == Enum.at(display_chunks, 1)
     assert player_name == Enum.join(Enum.take(display_chunks, -3), " ")
+    TestUtil.wipe_facts("player", player_id)
+  end
+
+
+  test "read player hrc" do
+    player_name = "Bertil"
+    player_id = Id.hrid(player_name)
+    TestUtil.wipe_facts("player", player_id)
+    process [{:hrc, "create player Bertil"}]
+    display = process [{:hrc, "read player bertil"}]
+    display_chunks = String.split(display, " ")
+    assert "read:" == Enum.at(display_chunks, 0)
+    assert player_id == Enum.at(display_chunks, 1)
+    assert player_name == Enum.join(Enum.take(display_chunks, -1), " ")
     TestUtil.wipe_facts("player", player_id)
   end
 
@@ -75,7 +99,26 @@ defmodule CliTest do
     deck_name = "Create Deck CLI"
     deck_id = Id.hrid(deck_name)
     TestUtil.wipe_facts("deck", deck_id)
-    assert "created: #{deck_id}, player id: #{player_id}" == process [{:create, "deck"}, {:name, deck_name}, {:player_id, player_id}]
+    assert "created: #{deck_id}" == process [{:create, "deck"}, {:name, deck_name}, {:playerid, player_id}]
+
+    #Cleanup
+    TestUtil.wipe_facts("deck", deck_id)
+    TestUtil.wipe_facts("player", player_id)
+  end
+
+
+  test "create deck hrc" do
+    #Need a player as player
+    player_name = "Ceasar"
+    player_id = Id.hrid(player_name)
+    TestUtil.wipe_facts("player", player_id)
+    process [{:hrc, "create player #{player_name}"}]
+
+    #Create deck
+    deck_name = "Alpha"
+    deck_id = Id.hrid(deck_name)
+    TestUtil.wipe_facts("deck", deck_id)
+    assert "created: #{deck_id}" == process [{:hrc, "create deck #{deck_name} with player_id #{player_id}"}]
 
     #Cleanup
     TestUtil.wipe_facts("deck", deck_id)
@@ -94,13 +137,40 @@ defmodule CliTest do
     deck_name = "Create Game Decj CLI"
     deck_id = Id.hrid(deck_name)
     TestUtil.wipe_facts("deck", deck_id)
-    result = process [{:create, "game"}, {:player_id, player_id}]
+    result = process [{:create, "game"}, {:playerid, player_id}]
     game_id = result
       |> String.replace(",", "")
       |> String.split(" ")
       |> Enum.at(1)
 
-    assert "created: #{game_id}, player id: #{player_id}" == result
+    assert "created: #{game_id}" == result
+
+    #Cleanup
+    TestUtil.wipe_facts("deck", deck_id)
+    TestUtil.wipe_facts("player", player_id)
+    TestUtil.wipe_facts("game", game_id)
+  end
+
+
+  test "create, append and read game hrc" do
+    #Need a player as player
+    player_name = "David"
+    player_id = Id.hrid(player_name)
+    TestUtil.wipe_facts("player", player_id)
+    process [{:hrc, "create player #{player_name}"}]
+
+    #Create game
+    ["created:", game_id] = process([{:hrc, "create game with player_id #{player_id}"}]) |> String.split()
+    assert is_bitstring(game_id)
+
+    #Create deck
+    deck_name = "Bravo"
+    deck_id = Id.hrid(deck_name)
+    TestUtil.wipe_facts("deck", deck_id)
+    assert "created: #{deck_id}" == process [{:hrc, "create deck #{deck_name} with player_id #{player_id}"}]
+
+    assert "appended: #{game_id}, appended: #{player_id}" == process [{:hrc, "append game #{game_id} with player_id #{player_id} and deck_id #{deck_id} and place 1"}]
+    assert ["read:", ^game_id, "::", "created", creation_timestamp, "-", "player_id:", ^player_id, "-", "result:", ^player_id, ^deck_id, "1"] = process([{:hrc, "read game #{game_id}"}]) |> String.split()
 
     #Cleanup
     TestUtil.wipe_facts("deck", deck_id)

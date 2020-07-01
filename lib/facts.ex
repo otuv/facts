@@ -6,6 +6,7 @@ defmodule Facts do
 
     def input(%Event{} = event) do
         [
+            # todo player och deck måste också reagera på att ett game läggs till
             Player.feed(event),
             Deck.feed(event),
             Game.feed(event),

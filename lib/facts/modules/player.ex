@@ -4,6 +4,7 @@ defmodule Facts.Player do
     alias Facts.Data
     alias Facts.Event
 
+    def feed(%Event{id: event_id, tags: [:create, :player], data: %{id: id}}), do: feed(%Event{id: event_id, tags: [:create, :player], data: %{name: id}})
     def feed(%Event{id: event_id, tags: [:create, :player], data: %{name: name}}) do
         player_id = Id.hrid name
         :ok = create_player event_id, player_id
@@ -14,7 +15,7 @@ defmodule Facts.Player do
     def feed(%Event{id: _event_id, tags: [:read, :player], data: %{id: player_id}}) do
         facts = read_facts(player_id)
         |> Enum.map(fn f -> parse_fact(f) end)
-        |> Enum.join(", ")
+        |> Enum.join(" - ")
 
         [read: "#{player_id} :: " <> facts]
     end
@@ -28,6 +29,11 @@ defmodule Facts.Player do
     def feed(%Event{id: event_id, tags: [:delete, :player], data: %{id: player_id}}) do
         :ok = delete_player event_id, player_id
         [deleted: player_id]
+    end
+
+    def feed(%Event{id: event_id, tags: [:appended, :game, :result], data: result}) do
+        :ok = add_fact_game(event_id, result.player_id, Map.delete(result, :player_id))
+        [appended: result.player_id]
     end
 
     def feed(_) do
@@ -55,6 +61,10 @@ defmodule Facts.Player do
 
     defp add_fact_name(origin, player_id, name) when is_bitstring(name) do
         add_fact(origin, player_id, %{name: name})
+    end
+
+    defp add_fact_game(origin, player_id, result) when is_map(result) do
+        add_fact(origin, player_id, result)
     end
 
 
