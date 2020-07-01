@@ -31,6 +31,11 @@ defmodule Facts.Player do
         [deleted: player_id]
     end
 
+    def feed(%Event{id: event_id, tags: [:appended, :game, :result], data: result}) do
+        :ok = add_fact_game(event_id, result.player_id, Map.delete(result, :player_id))
+        [appended: result.player_id]
+    end
+
     def feed(_) do
         []
     end
@@ -56,6 +61,10 @@ defmodule Facts.Player do
 
     defp add_fact_name(origin, player_id, name) when is_bitstring(name) do
         add_fact(origin, player_id, %{name: name})
+    end
+
+    defp add_fact_game(origin, player_id, result) when is_map(result) do
+        add_fact(origin, player_id, result)
     end
 
 

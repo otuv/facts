@@ -13,7 +13,7 @@ defmodule Facts.Game do
     game_id = Id.guid()
     :ok = create_game(event_id, game_id)
     :ok = add_fact_player_id(event_id, game_id, player_id)
-    [created: game_id]
+    [created: game_id] ++ Facts.input(Event.new([:created, :game], %{id: game_id}))
   end
 
   def feed(%Event{id: _event_id, tags: [:read, :game], data: %{id: game_id}}) do
@@ -25,9 +25,11 @@ defmodule Facts.Game do
     [read: "#{game_id} :: " <> facts]
   end
 
-  def feed(%Event{id: event_id, tags: [:append, :game], data: data}) do
+  def feed(%Event{id: event_id, tags: [:append, :game], data: %{player_id: player_id, deck_id: deck_id, place: place, id: id} = data}) do
     :ok = add_fact_result(event_id, data.id, data)
-    [appended: "#{data.id}"]
+    event_game_appended = Event.new([:appended, :game, :result], %{id: id, player_id: player_id, deck_id: deck_id, place: place})
+    [response] = Facts.input(event_game_appended)
+    [appended: "#{data.id}"] ++ response
   end
 
   def feed(%Event{id: event_id, tags: [:delete, :game], data: %{id: game_id}}) do
@@ -93,10 +95,11 @@ defmodule Facts.Game do
     "player_id: #{player_id}"
   end
 
-  defp parse_fact(
-         {_origin, _timestamp,
-          %{result: %{deck_id: deck_id, id: _result_id, place: place, player_id: player_id}}}
-       ) do
+  defp parse_fact({
+      _origin,
+      _timestamp,
+      %{result: %{deck_id: deck_id, id: _result_id, place: place, player_id: player_id}}
+      }) do
     "result: #{player_id} #{deck_id} #{place}"
   end
 

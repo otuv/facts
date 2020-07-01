@@ -169,7 +169,7 @@ defmodule CliTest do
     TestUtil.wipe_facts("deck", deck_id)
     assert "created: #{deck_id}" == process [{:hrc, "create deck #{deck_name} with player_id #{player_id}"}]
 
-    assert "appended: #{game_id}" == process [{:hrc, "append game #{game_id} with player_id #{player_id} and deck_id #{deck_id} and place 1"}]
+    assert "appended: #{game_id}, appended: #{player_id}" == process [{:hrc, "append game #{game_id} with player_id #{player_id} and deck_id #{deck_id} and place 1"}]
     assert ["read:", ^game_id, "::", "created", creation_timestamp, "-", "player_id:", ^player_id, "-", "result:", ^player_id, ^deck_id, "1"] = process([{:hrc, "read game #{game_id}"}]) |> String.split()
 
     #Cleanup
